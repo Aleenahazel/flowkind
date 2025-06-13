@@ -2,7 +2,7 @@ import streamlit as st
 from openai import OpenAI
 import os
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 st.title("FlowKind – AI-Powered Customer Engagement Map")
 
@@ -147,7 +147,7 @@ Use clear, strategic language and assume the reader is a founder or early ops hi
 """
 
 # Call OpenAI
-client = openai.OpenAI()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 response = client.chat.completions.create(
     model="gpt-4",
