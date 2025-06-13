@@ -8,7 +8,7 @@ client = OpenAI(
 )
 
 def run_cem_maker(user_inputs, specialist_agent_choices):
-    st.subheader("CEM Output")
+    st.header("CEM Output")
 
     # Show the user summary
     st.markdown("### Business Snapshot")
