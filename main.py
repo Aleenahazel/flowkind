@@ -14,46 +14,39 @@ st.markdown("### *AI–Powered for Human Engagement*")
 st.markdown("---")
 
 # Agent options
-agent_choice = st.multiselect(
-    "Which agent would you like to run?",
-    [
-        "🧭 CEM Maker Agent",
-        "🚀 Onboarding Agent",
-        "🔁 Retention Agent",
-        "💬 Support Agent",
-        "👋 Offboarding Agent",
-        "🧩 Full Engagement Engine (All)"
-    ]
-)
+# Step 1: Run CEM Maker Agent by default
+from cem_maker_agent import run_cem_maker
+run_cem_maker()  # Always runs the form
 
 st.markdown("---")
 
-# Route to the selected agent
-if agent_choice == "🧭 CEM Maker Agent":
-    from cem_maker_agent import run_cem_maker
-    run_cem_maker()
+# Let user choose which specialist agents to include (excluding CEM & Full Engine)
+specialist_agent_choices = st.multiselect(
+    "Which parts of the customer journey would you like to improve?",
+    [
+        "🚀 Onboarding Agent",
+        "🔁 Retention Agent",
+        "💬 Support Agent",
+        "👋 Offboarding Agent"
+    ]
+)
 
-elif agent_choice == "🚀 Onboarding Agent":
+# Route to the selected specialist agents
+if "🚀 Onboarding Agent" in specialist_agent_choices:
     from agents.onboarding_agent import run_onboarding_agent
     run_onboarding_agent()
 
-elif agent_choice == "🔁 Retention Agent":
+if "🔁 Retention Agent" in specialist_agent_choices:
     from agents.retention_agent import run_retention_agent
     run_retention_agent()
 
-elif agent_choice == "💬 Support Agent":
+if "💬 Support Agent" in specialist_agent_choices:
     from agents.support_agent import run_support_agent
     run_support_agent()
 
-elif agent_choice == "👋 Offboarding Agent":
+if "👋 Offboarding Agent" in specialist_agent_choices:
     from agents.offboarding_agent import run_offboarding_agent
     run_offboarding_agent()
-
-elif agent_choice == "🧩 Full Engagement Engine (All)":
-    from flowkind_conductor import run_full_engagement_engine
-    run_full_engagement_engine()
-else:
-    st.warning("Select an agent to begin.")
 
 company_name = st.text_input("Company Name")
 
