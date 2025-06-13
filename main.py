@@ -3,25 +3,21 @@ from openai import OpenAI
 import os
 from utils import select_with_other
 
+# Configure the page
 st.set_page_config(page_title="FlowKind", layout="centered")
 
+# Load OpenAI Client
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
     organization=os.getenv("OPENAI_ORG_ID")
 )
+
+# Header
 st.title("FlowKind")
 st.markdown("### *AI–Powered for Human Engagement*")
 st.markdown("---")
 
-# Agent options
-# Step 1: Run CEM Maker Agent by default
-from cem_maker_agent import run_cem_maker
-run_cem_maker()  
-# Always runs the form
-
-st.markdown("---")
-
-# Let user choose which specialist agents to include (excluding CEM & Full Engine)
+# Step 1 — Agent Selection
 specialist_agent_choices = st.multiselect(
     "Which parts of the customer journey would you like to improve?",
     [
@@ -32,27 +28,11 @@ specialist_agent_choices = st.multiselect(
     ]
 )
 
-# Route to the selected specialist agents
-if "🚀 Onboarding Agent" in specialist_agent_choices:
-    from agents.onboarding_agent import run_onboarding_agent
-    run_onboarding_agent()
-
-if "🔁 Retention Agent" in specialist_agent_choices:
-    from agents.retention_agent import run_retention_agent
-    run_retention_agent()
-
-if "💬 Support Agent" in specialist_agent_choices:
-    from agents.support_agent import run_support_agent
-    run_support_agent()
-
-if "👋 Offboarding Agent" in specialist_agent_choices:
-    from agents.offboarding_agent import run_offboarding_agent
-    run_offboarding_agent()
+# Step 2 — Business Snapshot
+st.header("Step 2: Business Snapshot")
 
 company_name = st.text_input("Company Name")
 
-# Industry Section – General + Subcategory
-# Industry Category (Home Services focused)
 industry_main = select_with_other("Industry Category", [
     "Pet Care Services",
     "Home Maintenance",
@@ -62,7 +42,7 @@ industry_main = select_with_other("Industry Category", [
     "Other Home-Based Services"
 ], key_suffix="industry_main")
 
-# Subcategories based on selection
+# Subcategories
 if industry_main == "Pet Care Services":
     industry_sub = select_with_other("Specific Field", [
         "Dog Walking", "Pet Sitting", "Boarding", "Training", "Grooming", "Mobile Vet / Wellness", "Other"
@@ -104,8 +84,8 @@ budget = st.radio("Budget Level", [
 ])
 brand_voice = st.text_input("How would you describe your brand voice?")
 
-# Step 2 – Engagement Goals
-st.header("Step 2: Engagement Goals")
+# Step 3 — Engagement Goals
+st.header("Step 3: Engagement Goals")
 
 engagement_goals = st.multiselect(
     "What do you want to improve?",
@@ -115,17 +95,10 @@ engagement_goals = st.multiselect(
 kpis = st.multiselect(
     "What KPIs matter most to you right now?",
     [
-        "Activation Rate",
-        "Time to First Value",
-        "Onboarding Completion Rate",
-        "Customer Retention Rate",
-        "Churn Rate",
-        "Engagement Frequency",
-        "Conversion Rate",
-        "Referral Rate",
-        "Customer Lifetime Value (LTV)",
-        "Net Promoter Score (NPS)",
-        "Other"
+        "Activation Rate", "Time to First Value", "Onboarding Completion Rate",
+        "Customer Retention Rate", "Churn Rate", "Engagement Frequency",
+        "Conversion Rate", "Referral Rate", "Customer Lifetime Value (LTV)",
+        "Net Promoter Score (NPS)", "Other"
     ]
 )
 
@@ -133,7 +106,6 @@ if "Other" in kpis:
     other_kpi = st.text_input("Please describe your custom KPI")
     if other_kpi:
         kpis.append(other_kpi)
-
 
 preferred_channels = st.multiselect(
     "Preferred communication channels",
@@ -165,111 +137,25 @@ else:
     content_types = ""
     challenges = ""
 
+# Final Submission
 if st.button("Generate My Engagement Map"):
-    st.success("Form submitted! Generating outputs...")
+    from cem_maker_agent import run_cem_maker
 
-st.success("Generating engagement map with AI...")
-
-# Combine all user inputs into a structured summary
-user_inputs = f"""
-Company Name: {company_name}
-Industry: {industry_main} - {industry_sub}
-Location: {location}
-Team Size: {team_size}
-Budget: {budget}
-Brand Voice: {brand_voice}
-
-Engagement Goals: {', '.join(engagement_goals)}
-Key KPIs: {kpis}
-Preferred Channels: {', '.join(preferred_channels)}
-Tools Used: {', '.join(tools)}
-Team Roles: {team_roles}
-
-Personas: {personas}
-Content Types: {content_types}
-Challenges: {challenges}
-"""
-# Role prompt with strategic frameworks
-system_prompt = """
-You are a senior customer experience strategist and service designer.
-You specialize in building human-centered, high-conversion customer engagement flows that align with Jobs To Be Done, the HEART UX framework, and behavioral science principles (BJ Fogg, Kahneman).
-
-You blend strategic brand positioning (Simon Sinek, Marty Neumeier, Seth Godin) with UX and research best practices (IDEO, Erika Hall), using service design methods (Stickdorn) and bot design logic (Amir Shevat) to map real-life journeys across key touchpoints.
-
-Your job is to guide small businesses with limited budgets through meaningful, scalable engagement strategies.
-"""
-
-# User prompt with detailed output instructions
-user_prompt = f"""
-Using the following business profile:
-
-{user_inputs}
-
-Generate a complete Customer Engagement Map. Your output should include:
-
-1. A written breakdown of each engagement stage (e.g., Awareness → First Value → Activation → Retention → Advocacy)
-   - Goals of that stage
-   - Primary customer actions or thoughts (Jobs To Be Done style)
-   - Key team roles or tools involved
-   - Preferred channels or formats (e.g., SMS, email, in-person)
-
-2. Additional Recommendations
-   - Brand tone and behavior suggestions
-   - Follow-up logic or automation ideas
-   - Metrics to monitor (HEART or business KPIs)
-   - Sustainability tips for small teams
-
-3. A Mermaid.js-compatible flowchart showing the journey structure and key decisions.
-
-Use clear, strategic language and assume the reader is a founder or early ops hire.
-"""
-
-# Call OpenAI
-response = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_prompt}
-    ],
-    temperature=0.7,
-)
-
-full_output = response.choices[0].message.content
-
-# Separate flowchart if possible
-if "```mermaid" in full_output:
-    parts = full_output.split("```mermaid")
-    prompt_text = parts[0].strip()
-    mermaid_diagram = parts[1].split("```")[0].strip()
-else:
-    prompt_text = full_output
-    mermaid_diagram = "graph TD\nA[Start] --> B[Mermaid Diagram Not Detected]"
-
-
-import zipfile
-from io import BytesIO
-
-def create_downloadable_zip(prompt_text, mermaid_diagram):
-    prompt_bytes = BytesIO()
-    prompt_bytes.write(prompt_text.encode('utf-8'))
-    prompt_bytes.seek(0)
-
-    mermaid_bytes = BytesIO()
-    mermaid_bytes.write(f"```mermaid\n{mermaid_diagram}\n```".encode('utf-8'))
-    mermaid_bytes.seek(0)
-
-    zip_buffer = BytesIO()
-    with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr("prompt.txt", prompt_bytes.read())
-        zf.writestr("flowchart.md", mermaid_bytes.read())
-    zip_buffer.seek(0)
-
-    st.download_button(
-        label="📦 Download CEM Output as ZIP",
-        data=zip_buffer,
-        file_name="flowkind_output.zip",
-        mime="application/zip"
+    run_cem_maker(
+        company_name,
+        industry_main,
+        industry_sub,
+        location,
+        team_size,
+        budget,
+        brand_voice,
+        engagement_goals,
+        kpis,
+        preferred_channels,
+        tools,
+        team_roles,
+        personas,
+        content_types,
+        challenges,
+        specialist_agent_choices
     )
-
-# Generate the downloadable ZIP
-create_downloadable_zip(prompt_text, mermaid_diagram)
