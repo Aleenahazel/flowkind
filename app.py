@@ -1,12 +1,13 @@
 import streamlit as st
 from openai import OpenAI
 import os
+from utils import select_with_other
 
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
     organization=os.getenv("OPENAI_ORG_ID")
 )
-st.title("FlowKind – AI-Powered Customer Engagement Model")
+st.title("FlowKind – AI-Powered For Human Engagement")
 
 # Step 1 – Business Snapshot
 st.header("Step 1: Business Snapshot")
@@ -14,43 +15,48 @@ st.header("Step 1: Business Snapshot")
 company_name = st.text_input("Company Name")
 
 # Industry Section – General + Subcategory
-industry_main = st.selectbox("Industry Category", [
-    "Construction",
-    "Health & Wellness",
-    "Pet Services",
-    "Education & Tutoring",
-    "Home Services",
-    "Retail (Physical & Online)",
-    "Consulting & Coaching",
-    "Events & Creative Services",
-    "Legal & Financial Services",
-    "Tech / SaaS / Online Tools",
-    "Other"
-])
+# Industry Category (Home Services focused)
+industry_main = select_with_other("Industry Category", [
+    "Pet Care Services",
+    "Home Maintenance",
+    "Home Organization & Interior",
+    "Health & Personal Homecare",
+    "Landscaping & Lawncare",
+    "Other Home-Based Services"
+], key_suffix="industry_main")
 
-# Subcategories based on the main industry
-if industry_main == "Construction":
-    industry_sub = st.selectbox("Specific Field", ["General Contractor", "Electrician", "Plumber", "HVAC", "Painter", "Other"])
-elif industry_main == "Health & Wellness":
-    industry_sub = st.selectbox("Specific Field", ["Physical Therapy", "Massage", "Yoga", "Reiki", "Chiropractor", "Other"])
-elif industry_main == "Pet Services":
-    industry_sub = st.selectbox("Specific Field", ["Dog Walking", "Grooming", "Training", "Boarding", "Vet", "Other"])
-elif industry_main == "Education & Tutoring":
-    industry_sub = st.selectbox("Specific Field", ["K–12 Tutoring", "Adult Education", "Test Prep", "Language Learning", "Homeschool Support", "Other"])
-elif industry_main == "Home Services":
-    industry_sub = st.selectbox("Specific Field", ["Cleaning", "Landscaping", "Interior Design", "Organizing", "Handyman", "Other"])
-elif industry_main == "Retail (Physical & Online)":
-    industry_sub = st.selectbox("Specific Field", ["Boutique", "eCommerce", "Bookstore", "Pop-up Vendor", "Other"])
-elif industry_main == "Consulting & Coaching":
-    industry_sub = st.selectbox("Specific Field", ["Business", "Marketing", "Life Coaching", "Career", "Spiritual", "Other"])
-elif industry_main == "Events & Creative Services":
-    industry_sub = st.selectbox("Specific Field", ["Photography", "Event Planning", "Design", "Catering", "Florals", "Other"])
-elif industry_main == "Legal & Financial Services":
-    industry_sub = st.selectbox("Specific Field", ["Bookkeeping", "Taxes", "Lawyer", "Notary", "Insurance", "Other"])
-elif industry_main == "Tech / SaaS / Online Tools":
-    industry_sub = st.selectbox("Specific Field", ["CRM", "Productivity App", "B2B SaaS", "AI Tool", "No-Code Platform", "Other"])
+# Subcategories based on selection
+if industry_main == "Pet Care Services":
+    industry_sub = select_with_other("Specific Field", [
+        "Dog Walking", "Pet Sitting", "Boarding", "Training", "Grooming", "Mobile Vet / Wellness", "Other"
+    ], key_suffix="pet_services")
+
+elif industry_main == "Home Maintenance":
+    industry_sub = select_with_other("Specific Field", [
+        "Cleaning Services", "Handyman / Repairs", "HVAC", "Plumbing", "Electrical", "Painting",
+        "Appliance Repair", "Pest Control", "Other"
+    ], key_suffix="home_maintenance")
+
+elif industry_main == "Home Organization & Interior":
+    industry_sub = select_with_other("Specific Field", [
+        "Home Organizer", "Interior Design", "Feng Shui / Styling", "Decluttering Consultant", "Other"
+    ], key_suffix="home_org")
+
+elif industry_main == "Health & Personal Homecare":
+    industry_sub = select_with_other("Specific Field", [
+        "Non-Medical Homecare", "Companionship Services", "In-Home Massage / Wellness",
+        "Doulas / Postpartum Care", "Senior Support", "Other"
+    ], key_suffix="homecare")
+
+elif industry_main == "Landscaping & Lawncare":
+    industry_sub = select_with_other("Specific Field", [
+        "Lawn Mowing", "Snow Removal", "Landscape Design", "Tree / Shrub Maintenance",
+        "Gutter / Outdoor Cleaning", "Other"
+    ], key_suffix="landscaping")
+
 else:
-    industry_sub = st.text_input("Please describe your industry")
+    industry_sub = select_with_other("Specific Field", ["Other"], key_suffix="other_catchall")
+
 location = st.text_input("Location (City or Region)")
 team_size = st.selectbox("Team Size", ["Solo", "2–5", "6–15", "16–50", "50+"])
 budget = st.radio("Budget Level", [
