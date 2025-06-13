@@ -1,4 +1,9 @@
 import streamlit as st
+import openai
+import os
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 st.title("FlowKind – AI-Powered Customer Engagement Map")
 
@@ -84,4 +89,113 @@ else:
     challenges = ""
 
 if st.button("Generate My Engagement Map"):
-    st.success("Form submitted! GPT prompt logic goes next.")
+    st.success("Form submitted! Generating outputs...")
+
+st.success("Generating engagement map with AI...")
+
+# Combine all user inputs into a structured summary
+user_inputs = f"""
+Company Name: {company_name}
+Industry: {industry_main} - {industry_sub}
+Location: {location}
+Team Size: {team_size}
+Budget: {budget}
+Brand Voice: {brand_voice}
+
+Engagement Goals: {', '.join(engagement_goals)}
+Key KPIs: {kpis}
+Preferred Channels: {', '.join(preferred_channels)}
+Tools Used: {', '.join(tools)}
+Team Roles: {team_roles}
+
+Personas: {personas}
+Content Types: {content_types}
+Challenges: {challenges}
+"""
+# Role prompt with strategic frameworks
+system_prompt = """
+You are a senior customer experience strategist and service designer.
+You specialize in building human-centered, high-conversion customer engagement flows that align with Jobs To Be Done, the HEART UX framework, and behavioral science principles (BJ Fogg, Kahneman).
+
+You blend strategic brand positioning (Simon Sinek, Marty Neumeier, Seth Godin) with UX and research best practices (IDEO, Erika Hall), using service design methods (Stickdorn) and bot design logic (Amir Shevat) to map real-life journeys across key touchpoints.
+
+Your job is to guide small businesses with limited budgets through meaningful, scalable engagement strategies.
+"""
+
+# User prompt with detailed output instructions
+user_prompt = f"""
+Using the following business profile:
+
+{user_inputs}
+
+Generate a complete Customer Engagement Map. Your output should include:
+
+1. A written breakdown of each engagement stage (e.g., Awareness → First Value → Activation → Retention → Advocacy)
+   - Goals of that stage
+   - Primary customer actions or thoughts (Jobs To Be Done style)
+   - Key team roles or tools involved
+   - Preferred channels or formats (e.g., SMS, email, in-person)
+
+2. Additional Recommendations
+   - Brand tone and behavior suggestions
+   - Follow-up logic or automation ideas
+   - Metrics to monitor (HEART or business KPIs)
+   - Sustainability tips for small teams
+
+3. A Mermaid.js-compatible flowchart showing the journey structure and key decisions.
+
+Use clear, strategic language and assume the reader is a founder or early ops hire.
+"""
+
+# Call OpenAI
+response = openai.ChatCompletion.create(
+    model="gpt-4",
+    messages=[
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt}
+    ],
+    temperature=0.7,
+)
+
+# Extract content
+full_output = response['choices'][0]['message']['content']
+
+# Separate flowchart if possible
+if "```mermaid" in full_output:
+    parts = full_output.split("```mermaid")
+    prompt_text = parts[0].strip()
+    mermaid_diagram = parts[1].split("```")[0].strip()
+else:
+    prompt_text = full_output
+    mermaid_diagram = "graph TD\nA[Start] --> B[Mermaid Diagram Not Detected]"
+
+# Generate the downloadable ZIP
+create_downloadable_zip(prompt_text, mermaid_diagram)
+
+
+
+import zipfile
+from io import BytesIO
+
+def create_downloadable_zip(prompt_text, mermaid_diagram):
+    prompt_bytes = BytesIO()
+    prompt_bytes.write(prompt_text.encode('utf-8'))
+    prompt_bytes.seek(0)
+
+    mermaid_bytes = BytesIO()
+    mermaid_bytes.write(f"```mermaid\n{mermaid_diagram}\n```".encode('utf-8'))
+    mermaid_bytes.seek(0)
+
+    zip_buffer = BytesIO()
+    with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("prompt.txt", prompt_bytes.read())
+        zf.writestr("flowchart.md", mermaid_bytes.read())
+    zip_buffer.seek(0)
+
+    st.download_button(
+        label="📦 Download CEM Output as ZIP",
+        data=zip_buffer,
+        file_name="flowkind_output.zip",
+        mime="application/zip"
+    )
+
