@@ -8,7 +8,7 @@ client = OpenAI(
     organization=os.getenv("OPENAI_ORG_ID")
 )
 st.title("FlowKind")
-st.subtitle("AI-Powered For Human Engagement")
+st.markdown("### *AI–Powered for Human Engagement*")
 
 # Step 1 – Business Snapshot
 st.header("Step 1: Business Snapshot")
