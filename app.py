@@ -6,7 +6,7 @@ client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
     organization=os.getenv("OPENAI_ORG_ID")
 )
-st.title("FlowKind – AI-Powered Customer Engagement Map")
+st.title("FlowKind – AI-Powered Customer Engagement Model")
 
 # Step 1 – Business Snapshot
 st.header("Step 1: Business Snapshot")
@@ -53,7 +53,12 @@ else:
     industry_sub = st.text_input("Please describe your industry")
 location = st.text_input("Location (City or Region)")
 team_size = st.selectbox("Team Size", ["Solo", "2–5", "6–15", "16–50", "50+"])
-budget = st.radio("Budget Level", ["DIY", "Mid-Tier", "Enterprise"])
+budget = st.radio("Budget Level", [
+    "DIY ($0–$500/month)", 
+    "Small ($500–$2,000/month)", 
+    "Mid-Tier ($2,000–$10,000/month)", 
+    "Enterprise ($10,000+/month)"
+])
 brand_voice = st.text_input("How would you describe your brand voice?")
 
 # Step 2 – Engagement Goals
@@ -169,10 +174,6 @@ else:
     prompt_text = full_output
     mermaid_diagram = "graph TD\nA[Start] --> B[Mermaid Diagram Not Detected]"
 
-# Generate the downloadable ZIP
-create_downloadable_zip(prompt_text, mermaid_diagram)
-
-
 
 import zipfile
 from io import BytesIO
@@ -198,4 +199,8 @@ def create_downloadable_zip(prompt_text, mermaid_diagram):
         file_name="flowkind_output.zip",
         mime="application/zip"
     )
+
+# Generate the downloadable ZIP
+create_downloadable_zip(prompt_text, mermaid_diagram)
+
 
