@@ -69,7 +69,27 @@ engagement_goals = st.multiselect(
     ["Onboarding → First Value", "Activation", "Upgrade/Upsell", "Reactivation", "Retention", "Referral", "Churn Recovery"]
 )
 
-kpis = st.text_input("What KPIs matter most to you?")
+kpis = st.multiselect(
+    "What KPIs matter most to you right now?",
+    [
+        "Activation Rate",
+        "Time to First Value",
+        "Onboarding Completion Rate",
+        "Customer Retention Rate",
+        "Churn Rate",
+        "Engagement Frequency",
+        "Conversion Rate",
+        "Referral Rate",
+        "Customer Lifetime Value (LTV)",
+        "Net Promoter Score (NPS)",
+        "Other"
+    ]
+    if "Other" in kpis:
+    other_kpi = st.text_input("Please describe your custom KPI")
+    if other_kpi:
+        kpis.append(other_kpi)
+)
+
 preferred_channels = st.multiselect(
     "Preferred communication channels",
     ["Email", "Chat", "Phone", "SMS", "In-App", "Slack", "Other"]
@@ -78,6 +98,12 @@ preferred_channels = st.multiselect(
 tools = st.multiselect(
     "Which tools do you use?",
     ["HubSpot", "Intercom", "Notion", "Airtable", "Zapier", "Freshworks", "Salesforce", "HoneyBook", "Other"]
+
+    if "Other" in tools:
+    other_tools = st.text_input("Please enter additional tools separated by a comma")
+    if other_tools:
+        tools.append(other_tools)
+
 )
 
 team_roles = st.text_input("What roles are on your team? (e.g., CSM, Support, Marketing)")
