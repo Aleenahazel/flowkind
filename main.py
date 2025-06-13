@@ -7,7 +7,7 @@ st.set_page_config(page_title="FlowKind", layout="centered")
 
 # Title & tagline
 st.title("FlowKind")
-st.header("AI-Powered for Human Engagement")
+st.markdown("### *AI–Powered for Human Engagement*")
 
 st.markdown("---")
 
