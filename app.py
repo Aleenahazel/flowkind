@@ -84,11 +84,13 @@ kpis = st.multiselect(
         "Net Promoter Score (NPS)",
         "Other"
     ]
-    if "Other" in kpis:
+)
+
+if "Other" in kpis:
     other_kpi = st.text_input("Please describe your custom KPI")
     if other_kpi:
         kpis.append(other_kpi)
-)
+
 
 preferred_channels = st.multiselect(
     "Preferred communication channels",
@@ -98,13 +100,13 @@ preferred_channels = st.multiselect(
 tools = st.multiselect(
     "Which tools do you use?",
     ["HubSpot", "Intercom", "Notion", "Airtable", "Zapier", "Freshworks", "Salesforce", "HoneyBook", "Other"]
-
-    if "Other" in tools:
-    other_tools = st.text_input("Please enter additional tools separated by a comma")
-    if other_tools:
-        tools.append(other_tools)
-
 )
+
+if "Other" in tools:
+    other_tools = st.text_input("Please enter additional tools separated by commas")
+    if other_tools:
+        additional = [tool.strip() for tool in other_tools.split(",") if tool.strip()]
+        tools.extend(additional)
 
 team_roles = st.text_input("What roles are on your team? (e.g., CSM, Support, Marketing)")
 
