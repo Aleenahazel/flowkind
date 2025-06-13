@@ -14,7 +14,7 @@ st.markdown("### *AI–Powered for Human Engagement*")
 st.markdown("---")
 
 # Agent options
-agent_choice = st.selectbox(
+agent_choice = st.multiselect(
     "Which agent would you like to run?",
     [
         "🧭 CEM Maker Agent",
