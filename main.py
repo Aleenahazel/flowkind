@@ -55,6 +55,8 @@ elif agent_choice == "🧩 Full Engagement Engine (All)":
 else:
     st.warning("Select an agent to begin.")
 
+company_name = st.text_input("Company Name")
+
 # Industry Section – General + Subcategory
 # Industry Category (Home Services focused)
 industry_main = select_with_other("Industry Category", [
