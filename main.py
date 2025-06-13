@@ -5,10 +5,12 @@ from utils import select_with_other
 
 st.set_page_config(page_title="FlowKind", layout="centered")
 
-# Title & tagline
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    organization=os.getenv("OPENAI_ORG_ID")
+)
 st.title("FlowKind")
 st.markdown("### *AI–Powered for Human Engagement*")
-
 st.markdown("---")
 
 # Agent options
