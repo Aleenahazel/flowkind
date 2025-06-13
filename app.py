@@ -1,9 +1,8 @@
 import streamlit as st
-import openai
+from openai import OpenAI
 import os
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 st.title("FlowKind – AI-Powered Customer Engagement Map")
 
@@ -148,7 +147,9 @@ Use clear, strategic language and assume the reader is a founder or early ops hi
 """
 
 # Call OpenAI
-response = openai.ChatCompletion.create(
+client = openai.OpenAI()
+
+response = client.chat.completions.create(
     model="gpt-4",
     messages=[
         {"role": "system", "content": system_prompt},
@@ -157,8 +158,7 @@ response = openai.ChatCompletion.create(
     temperature=0.7,
 )
 
-# Extract content
-full_output = response['choices'][0]['message']['content']
+full_output = response.choices[0].message.content
 
 # Separate flowchart if possible
 if "```mermaid" in full_output:
