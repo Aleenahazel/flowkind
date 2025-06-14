@@ -79,8 +79,8 @@ full_output = response.choices[0].message.content
 
 run_full_engagement_engine({"text": full_output}, user_inputs.get("specialist_agent_choices", []))
 
-    return {
-        "summary": summary,
-        "full_text_output": full_output,
-        "user_inputs": user_inputs
+return {
+    "summary": summary,
+    "full_text_output": full_output,
+    "user_inputs": user_inputs
     }
