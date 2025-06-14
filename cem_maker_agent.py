@@ -81,7 +81,7 @@ full_output = response.choices[0].message.content
 
 # Send to Conductor
 from flowkind_conductor import run_full_engagement_engine
-run_full_engagement_engine({"text": full_output}, user_inputs.get("selected_agents", []))
+run_full_engagement_engine({"text": full_output}, user_inputs.get("specialist_agent_choices", []))
 
 # Return dictionary for debugging or future chaining (optional)
 return {
