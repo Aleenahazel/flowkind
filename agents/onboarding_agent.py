@@ -10,7 +10,7 @@ def run_onboarding_agent(cem_base: str, user_inputs: str) -> dict:
     """
 
     # Load context for onboarding
-    with open("context/onboarding.md", "r") as f:
+    with open("context/onboarding_context.txt", "r") as f:
         onboarding_context = f.read()
 
     # Build OpenAI client
