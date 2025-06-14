@@ -61,15 +61,19 @@ def run_cem_maker(user_inputs: dict) -> dict:
        - Include a simple list of nodes and connections.
        - Use plain text, not code formatting.
     """
+system_prompt = """
+You are a customer experience strategist specializing in engagement journey mapping. 
+You help founders and CX teams clarify each stage of the customer lifecycle using plain language, behavioral insights, and practical team alignment.
+"""
 
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
-        ],
-        temperature=0.7,
-    )
+response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt}
+    ],
+    temperature=0.7,
+)
 
     full_output = response.choices[0].message.content
 
