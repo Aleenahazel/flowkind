@@ -16,7 +16,7 @@ client = OpenAI(
 
 # Header
 st.title("FlowKind")
-st.markdown("### *AI–Powered for Human Engagement*")
+st.markdown("### *AI-Powered for Human Engagement*")
 st.markdown("---")
 
 # Step 1 — Agent Selection
