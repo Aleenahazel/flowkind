@@ -2,6 +2,8 @@ import streamlit as st
 import zipfile
 from io import BytesIO
 from agents.onboarding_agent import run_onboarding_agent
+from utils import generate_drawio
+
 
 def run_full_engagement_engine(cem_data: dict, selected_agents: list):
     st.info("🚀 Running selected engagement agents...")
@@ -10,13 +12,21 @@ def run_full_engagement_engine(cem_data: dict, selected_agents: list):
         "CEM_Base.txt": cem_data["full_text_output"]
     }
 
-    if "🚀 Onboarding Agent" in selected_agents:
-        onboarding_output = run_onboarding_agent(
+   if "🚀 Onboarding Agent" in selected_agents:
+    onboarding_output = run_onboarding_agent(
         cem_data["full_text_output"],
         cem_data["summary"]
     )
-        all_outputs["Onboarding_Agent.txt"] = onboarding_output["output"]
-        st.success("✅ Onboarding Agent completed!")
+
+    # 1. Add onboarding recommendations
+    all_outputs["Onboarding_Agent.txt"] = onboarding_output["output"]
+
+    # 2. Generate Draw.io map from flowchart nodes
+    drawio_xml = generate_drawio(onboarding_output["flowchart_nodes"])
+    all_outputs["CEM_Map.drawio"] = drawio_xml
+
+    st.success("✅ Onboarding Agent completed!")
+
 
     # Placeholder for future agents:
     # if "🔁 Retention Agent" in selected_agents:
