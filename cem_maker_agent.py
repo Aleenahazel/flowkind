@@ -77,7 +77,7 @@ Generate a base Customer Engagement Map. Your output should include:
         temperature=0.7,
     )
 
-  full_output = response.choices[0].message.content
+full_output = response.choices[0].message.content
 
 # Send to Conductor
 from flowkind_conductor import run_full_engagement_engine
