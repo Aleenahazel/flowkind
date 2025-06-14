@@ -187,8 +187,8 @@ if not st.session_state.form_submitted:
 
                 from flowkind_conductor import run_full_engagement_engine
                 run_full_engagement_engine(cem_data, specialist_agent_choices)
-        else:
-        st.warning("🚧 Please complete all required fields before generating.")
+            else:
+            st.warning("🚧 Please complete all required fields before generating.")
         else:
         st.info("✅ Engagement Map already generated. Refresh or reset to start over.")
 
