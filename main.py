@@ -178,5 +178,5 @@ if all([
         st.success("✅ Base Engagement Map created!")
 
         # Pass to conductor for multi-agent processing
-        from flowkind_conductor import run_full_engagement_engine
-        run_full_engagement_engine(cem_data, specialist_agent_choices)
+    from flowkind_conductor import run_full_engagement_engine
+    run_full_engagement_engine(cem_data, specialist_agent_choices)
