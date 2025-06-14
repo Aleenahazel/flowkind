@@ -48,3 +48,35 @@ def generate_drawio(nodes: list[tuple[str, str]]) -> str:
         id_counter += 1
 
     return xml_header + ''.join(cells) + xml_footer
+
+from fpdf import FPDF
+
+def generate_strategy_pdf(user_inputs: dict, agent_output: dict) -> bytes:
+    """
+    Creates a PDF from user_inputs and onboarding agent recommendations.
+    Returns PDF as a bytes object.
+    """
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 16)
+    pdf.cell(200, 10, "FlowKind: Onboarding Strategy Report", ln=True, align='C')
+    pdf.ln(10)
+
+    # Section: Business Snapshot
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, "Business Snapshot", ln=True)
+    pdf.set_font("Arial", "", 11)
+    for key, value in user_inputs.items():
+        if value:
+            label = key.replace("_", " ").title()
+            pdf.multi_cell(0, 8, f"{label}: {value}")
+    pdf.ln(5)
+
+    # Section: Recommendations
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, "Onboarding Agent Recommendations", ln=True)
+    pdf.set_font("Arial", "", 11)
+    pdf.multi_cell(0, 8, agent_output["output"])
+
+    return pdf.output(dest="S").encode("latin1")
+
