@@ -139,39 +139,59 @@ else:
     content_types = ""
     challenges = ""
 
-# Only run once all required fields are filled
-if all([
-    company_name,
-    industry_main,
-    industry_sub,
-    location,
-    team_size,
-    budget,
-    brand_voice,
-    engagement_goals,
-    kpis,
-    preferred_channels,
-    tools,
-    team_roles
-]):
-    with st.spinner("🔄 Creating your base engagement map..."):
-        user_inputs = {
-            "company_name": company_name,
-            "industry_main": industry_main,
-            "industry_sub": industry_sub,
-            "location": location,
-            "team_size": team_size,
-            "budget": budget,
-            "brand_voice": brand_voice,
-            "engagement_goals": engagement_goals,
-            "kpis": kpis,
-            "preferred_channels": preferred_channels,
-            "tools": tools,
-            "team_roles": team_roles,
-            "personas": personas,
-            "content_types": content_types,
-            "challenges": challenges,
-        }
+# Initialize once to prevent double submission
+if "form_submitted" not in st.session_state:
+    st.session_state.form_submitted = False
+
+if not st.session_state.form_submitted:
+    if st.button("✨ Generate My Engagement Map"):
+        if all([
+            company_name,
+            industry_main,
+            industry_sub,
+            location,
+            team_size,
+            budget,
+            brand_voice,
+            engagement_goals,
+            kpis,
+            preferred_channels,
+            tools,
+            team_roles
+        ]):
+            st.session_state.form_submitted = True
+
+            with st.spinner("🔄 Creating your base engagement map..."):
+                user_inputs = {
+                    "company_name": company_name,
+                    "industry_main": industry_main,
+                    "industry_sub": industry_sub,
+                    "location": location,
+                    "team_size": team_size,
+                    "budget": budget,
+                    "brand_voice": brand_voice,
+                    "engagement_goals": engagement_goals,
+                    "kpis": kpis,
+                    "preferred_channels": preferred_channels,
+                    "tools": tools,
+                    "team_roles": team_roles,
+                    "personas": personas,
+                    "content_types": content_types,
+                    "challenges": challenges,
+                }
+
+                from cem_maker_agent import run_cem_maker
+                cem_data = run_cem_maker(user_inputs)
+
+                st.success("✅ Base Engagement Map created!")
+
+                from flowkind_conductor import run_full_engagement_engine
+                run_full_engagement_engine(cem_data, specialist_agent_choices)
+        else:
+            st.warning("🚧 Please complete all required fields before generating.")
+else:
+    st.info("✅ Engagement Map already generated. Refresh or reset to start over.")
+
 
         # Run base CEM agent
         cem_data = run_cem_maker(user_inputs)
