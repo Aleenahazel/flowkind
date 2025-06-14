@@ -75,9 +75,9 @@ response = client.chat.completions.create(
     temperature=0.7,
 )
 
-    full_output = response.choices[0].message.content
+full_output = response.choices[0].message.content
 
-    run_full_engagement_engine({"text": full_output}, user_inputs.get("specialist_agent_choices", []))
+run_full_engagement_engine({"text": full_output}, user_inputs.get("specialist_agent_choices", []))
 
     return {
         "summary": summary,
