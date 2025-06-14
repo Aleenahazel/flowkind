@@ -4,10 +4,10 @@ from openai import OpenAI
 from utils import select_with_other, generate_drawio, generate_strategy_pdf
 from flowkind_conductor import run_full_engagement_engine
 
-# Configure the page
+#Configure the page
 st.set_page_config(page_title="FlowKind", layout="centered")
 
-# Load OpenAI Client
+#Load OpenAI Client
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
     organization=os.getenv("OPENAI_ORG_ID")
