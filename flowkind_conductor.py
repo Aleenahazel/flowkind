@@ -2,8 +2,7 @@ import streamlit as st
 import zipfile
 from io import BytesIO
 from agents.onboarding_agent import run_onboarding_agent
-from utils import generate_drawio
-
+from utils import generate_drawio, generate_strategy_pdf
 
 def run_full_engagement_engine(cem_data: dict, selected_agents: list):
     st.info("🚀 Running selected engagement agents...")
@@ -18,12 +17,14 @@ def run_full_engagement_engine(cem_data: dict, selected_agents: list):
         cem_data["summary"]
     )
 
-    # 1. Add onboarding recommendations
     all_outputs["Onboarding_Agent.txt"] = onboarding_output["output"]
 
-    # 2. Generate Draw.io map from flowchart nodes
     drawio_xml = generate_drawio(onboarding_output["flowchart_nodes"])
     all_outputs["CEM_Map.drawio"] = drawio_xml
+
+    # Generate PDF strategy report
+    pdf_bytes = generate_strategy_pdf(cem_data["user_inputs"], onboarding_output)
+    all_outputs["Onboarding_Strategy.pdf"] = pdf_bytes
 
     st.success("✅ Onboarding Agent completed!")
 
