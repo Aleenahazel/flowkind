@@ -1,7 +1,6 @@
 import streamlit as st
 import os
 from openai import OpenAI
-from flowkind_conductor import run_full_engagement_engine
 
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
