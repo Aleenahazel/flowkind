@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 from openai import OpenAI
+from flowkind_conductor import run_full_engagement_engine
 
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
@@ -62,7 +63,6 @@ def run_cem_maker(user_inputs: dict) -> dict:
 
     full_output = response.choices[0].message.content
 
-    from flowkind_conductor import run_full_engagement_engine
     run_full_engagement_engine({"text": full_output}, user_inputs.get("specialist_agent_choices", []))
 
     return {
