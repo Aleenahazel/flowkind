@@ -11,7 +11,10 @@ def run_full_engagement_engine(cem_data: dict, selected_agents: list):
     }
 
     if "🚀 Onboarding Agent" in selected_agents:
-        onboarding_output = run_onboarding_agent(cem_data)
+        onboarding_output = run_onboarding_agent(
+        cem_data["full_text_output"],
+        cem_data["summary"]
+    )
         all_outputs["Onboarding_Agent.txt"] = onboarding_output
         st.success("✅ Onboarding Agent completed!")
 
