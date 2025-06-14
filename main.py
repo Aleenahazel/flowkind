@@ -4,7 +4,6 @@ from openai import OpenAI
 from utils import select_with_other, generate_drawio, generate_strategy_pdf
 from flowkind_conductor import run_full_engagement_engine
 
-
 # Configure the page
 st.set_page_config(page_title="FlowKind", layout="centered")
 
