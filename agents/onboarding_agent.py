@@ -57,8 +57,18 @@ Output should be clear and strategic — no headings needed.
 
     output = response.choices[0].message.content
 
+    # Manually define flowchart nodes for now (replace with parsing later if needed)
+    flowchart_nodes = [
+    ("Start", "Signup"),
+    ("Signup", "Welcome Email Sent"),
+    ("Welcome Email Sent", "In-App Tour Shown"),
+    ("In-App Tour Shown", "First Value Reached")
+]
+
     return {
-        "agent": "onboarding",
-        "output": output
-    }
+    "agent": "onboarding",
+    "output": output,
+    "flowchart_nodes": flowchart_nodes
+}
+
 
