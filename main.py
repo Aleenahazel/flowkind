@@ -2,7 +2,6 @@ import os
 import streamlit as st
 from openai import OpenAI
 from utils import select_with_other
-from flowkind_conductor import run_full_engagement_engine
 
 # Configure the page
 st.set_page_config(page_title="FlowKind", layout="centered")
@@ -179,4 +178,5 @@ if all([
         st.success("✅ Base Engagement Map created!")
 
         # Pass to conductor for multi-agent processing
+        from flowkind_conductor import run_full_engagement_engine
         run_full_engagement_engine(cem_data, specialist_agent_choices)
