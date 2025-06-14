@@ -15,7 +15,7 @@ def run_full_engagement_engine(cem_data: dict, selected_agents: list):
         cem_data["full_text_output"],
         cem_data["summary"]
     )
-        all_outputs["Onboarding_Agent.txt"] = onboarding_output
+        all_outputs["Onboarding_Agent.txt"] = onboarding_output["output"]
         st.success("✅ Onboarding Agent completed!")
 
     # Placeholder for future agents:
