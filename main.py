@@ -1,7 +1,9 @@
+import os
 import streamlit as st
 from openai import OpenAI
-import os
 from utils import select_with_other
+from cem_maker_agent import run_cem_maker
+
 
 # Configure the page
 st.set_page_config(page_title="FlowKind", layout="centered")
@@ -137,25 +139,45 @@ else:
     content_types = ""
     challenges = ""
 
-# Final Submission
-if st.button("Generate My Engagement Map"):
-    from cem_maker_agent import run_cem_maker
+# Only run once all required fields are filled
+if all([
+    company_name,
+    industry_main,
+    industry_sub,
+    location,
+    team_size,
+    budget,
+    brand_voice,
+    engagement_goals,
+    kpis,
+    preferred_channels,
+    tools,
+    team_roles
+]):
+    with st.spinner("🔄 Creating your base engagement map..."):
+        user_inputs = {
+            "company_name": company_name,
+            "industry_main": industry_main,
+            "industry_sub": industry_sub,
+            "location": location,
+            "team_size": team_size,
+            "budget": budget,
+            "brand_voice": brand_voice,
+            "engagement_goals": engagement_goals,
+            "kpis": kpis,
+            "preferred_channels": preferred_channels,
+            "tools": tools,
+            "team_roles": team_roles,
+            "personas": personas,
+            "content_types": content_types,
+            "challenges": challenges,
+        }
 
-    run_cem_maker(
-        company_name,
-        industry_main,
-        industry_sub,
-        location,
-        team_size,
-        budget,
-        brand_voice,
-        engagement_goals,
-        kpis,
-        preferred_channels,
-        tools,
-        team_roles,
-        personas,
-        content_types,
-        challenges,
-        specialist_agent_choices
-    )
+        # Run base CEM agent
+        cem_data = run_cem_maker(user_inputs)
+
+        st.success("✅ Base Engagement Map created!")
+
+        # Pass to conductor for multi-agent processing
+        from flowkind_conductor import run_full_engagement_engine
+        run_full_engagement_engine(cem_data, specialist_agent_choices)
