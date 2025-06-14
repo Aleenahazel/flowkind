@@ -77,11 +77,15 @@ Generate a base Customer Engagement Map. Your output should include:
         temperature=0.7,
     )
 
-    full_output = response.choices[0].message.content
+  full_output = response.choices[0].message.content
 
-    # 4. Return dictionary for conductor
-    return {
-        "summary": summary,
-        "full_text_output": full_output,
-        "user_inputs": user_inputs
-    }
+# Send to Conductor
+from flowkind_conductor import run_full_engagement_engine
+run_full_engagement_engine({"text": full_output}, user_inputs.get("selected_agents", []))
+
+# Return dictionary for debugging or future chaining (optional)
+return {
+    "summary": summary,
+    "full_text_output": full_output,
+    "user_inputs": user_inputs
+}
