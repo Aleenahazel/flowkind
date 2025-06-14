@@ -28,7 +28,6 @@ def run_cem_maker(user_inputs: dict) -> dict:
     Challenges: {user_inputs['challenges']}
     """
 
-    # 🔧 FIX: Add missing system prompt
     system_prompt = """
     You are a senior customer experience strategist and service designer.
     You specialize in building human-centered, high-conversion customer engagement flows that align with Jobs To Be Done, the HEART UX framework, and behavioral science principles (BJ Fogg, Kahneman).
@@ -61,26 +60,20 @@ def run_cem_maker(user_inputs: dict) -> dict:
        - Include a simple list of nodes and connections.
        - Use plain text, not code formatting.
     """
-system_prompt = """
-You are a customer experience strategist specializing in engagement journey mapping. 
-You help founders and CX teams clarify each stage of the customer lifecycle using plain language, behavioral insights, and practical team alignment.
-"""
 
-response = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_prompt}
-    ],
-    temperature=0.7,
-)
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        temperature=0.7,
+    )
 
-full_output = response.choices[0].message.content
+    full_output = response.choices[0].message.content
 
-run_full_engagement_engine({"text": full_output}, user_inputs.get("specialist_agent_choices", []))
-
-return {
-    "summary": summary,
-    "full_text_output": full_output,
-    "user_inputs": user_inputs
+    return {
+        "summary": summary,
+        "full_text_output": full_output,
+        "user_inputs": user_inputs
     }
