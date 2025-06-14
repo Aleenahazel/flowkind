@@ -11,7 +11,7 @@ from agents.offboarding_agent import run_offboarding_agent
 def run_full_engagement_engine(cem_data: dict, selected_agents: list):
     st.info("🔍 Running selected engagement agents...")
 
-all_outputs = {"CEM_Base.txt": cem_data["full_text_output"]}
+    all_outputs = {"CEM_Base.txt": cem_data["full_text_output"]}
 
     if "🚀 Onboarding Agent" in selected_agents:
         onboarding_output = run_onboarding_agent(cem_data)
